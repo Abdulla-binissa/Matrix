@@ -3,73 +3,39 @@ import random
 class State():
 
     def __init__(self):
-
-        self.dictionary = {(0,0): 1}
-
-    def cellClicked(self, cellSelected):
-        step = 1
-        if cellSelected in self.dictionary.keys():
-            value = self.dictionary.get(cellSelected)
-            value += step
-            if value >= 12: 
-                value = 0
-            self.dictionary[cellSelected] = round(value, 1)
-        else: 
-            self.dictionary[cellSelected] = round(step, 1)
-
-    def getCellValue(self, cellSelected):
-        if not cellSelected in self.dictionary.keys():
-            return 0
-        return self.dictionary.get(cellSelected)
-
-    def add(self, centerCell):
-        amount = 10
-        x = centerCell[0]
-        y = centerCell[1]
-
-        for i in range(1, amount):
-            for j in range(i + 1):
-                x1 = x - i + j
-                y1 = y - j
-                self.cellClicked( (x1, y1) )
-
-                x2 = x + i - j
-                y2 = y + j
-                self.cellClicked( (x2, y2) )
-
-            for j in range(1, i):
-                x1 = x - j
-                y1 = y + i - j
-                self.cellClicked( (x1, y1) )
-
-                x2 = x + j
-                y2 = y - i + j
-                self.cellClicked( (x2, y2) )
-
-    def add2(self, centerCell):
-        amount = 10
-        x = centerCell[0]
-        y = centerCell[1]
-
-        startCell = (x-1, y) # Cell directly above
-        checkCell = startCell
-        closestCell = startCell
-
-    def add3(self, centerCell):
-        amount = 20 * self.dictionary.get(centerCell)
-        x = centerCell[0]
-        y = centerCell[1]
-
-        ## Step1: Get list of surrounding cells (empty)
-            # Iterate with golden angle (137.5) around center cell to get surrounding cells until cells starts to repeat
-
-        ## Step2: Find closest cell within list
-            # Break ties with whichever is first in list (should be in order of the 137.5 angle)
-
-        ## Done!
+        self.dictionary = {(0,0): (1, 255)}
 
 
+    def addDrop(self, width, top):
+        screenTop = top - 1
+        screenMin = -width // 2
+        screenMax = width // 2
+        column = random.randint(screenMin, screenMax)
+
+        self.dictionary[screenTop, column] = (1, 255)
+
+        print(self.dictionary)
 
 
+    def update(self, screenBottom):
+        temp = self.dictionary.copy()
+        
+        for cellPos in self.dictionary.keys():
+            cellValue = (self.dictionary[cellPos][0], self.dictionary[cellPos][1])
+            
+            #if cellValue[1] <= 0:
+               #del temp[cellPos]
+                #print("pop")
 
+            if cellValue[1] >= 20:
+                temp[cellPos] =  (cellValue[0], cellValue[1] - 20) #Lower oppacity
+            else: 
+                temp[cellPos] =  (cellValue[0], 0) 
+            
+            if cellPos[0] <= screenBottom:
+                temp[(cellPos[0] + 1, cellPos[1])] = (1, 255)  # Add white to next bottom
+            
+        
+        self.dictionary = temp.copy()
 
+        

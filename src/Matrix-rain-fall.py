@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 import Data
+import time
 
 SQ_SIZE =  16 
 MAX_FPS = 15
@@ -29,27 +30,27 @@ def main():
     state = Data.State()
 
     loadImages()
+    
+    notNow = int(time.time())
 
     mainLoop = True
     while mainLoop:
+
         for event in pygame.event.get():
-            
             if event.type == pygame.QUIT:
                 mainLoop = False
-
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                location = pygame.mouse.get_pos()
-                col = (location[0] - WIDTH / 2) // SQ_SIZE 
-                row = (location[1] - HEIGHT / 2) // SQ_SIZE 
-                cellSelected = (row, col)
-
-                state.cellClicked(cellSelected)
-
+                state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
             elif event.type == pygame.VIDEORESIZE:
                 screen.fill(pygame.Color('black'))
                 HEIGHT = screen.get_height()
                 WIDTH = screen.get_width()
-                
+        
+        now = int(time.time()*10 % 60)
+        if now != notNow:
+            state.update((HEIGHT / SQ_SIZE / 2))    
+        notNow = int(time.time()*10 % 60)
+
         drawState(screen, state)
         clock.tick(MAX_FPS)
         pygame.display.flip()
@@ -58,7 +59,7 @@ def main():
 '''
 Responsible for all graphics within a current game state
 '''   
-def drawState(screen, state):
+def drawState(screen, state): #, state):
     HEIGHT = screen.get_height()
     WIDTH = screen.get_width()
 
@@ -70,26 +71,20 @@ def drawState(screen, state):
     for r in range( int(top) -1, int(bottom) +1):
         for c in range( int(left) -1, int(right) +1):
 
-            padding, margin = 0.5, 4
+            padding = 0.5
             squareOuter = pygame.Rect(
                 (right+c)*SQ_SIZE + padding, 
                 (bottom+r)*SQ_SIZE + padding, 
                 SQ_SIZE - 2*padding, 
                 SQ_SIZE - 2*padding)
-            squareInner = pygame.Rect(
-                (right+c)*SQ_SIZE + padding + margin, 
-                (bottom+r)*SQ_SIZE + padding + margin, 
-                SQ_SIZE - 2*padding - 2*margin, 
-                SQ_SIZE - 2*padding - 2*margin)
-            color = state.getCellValue((r,c))
-
-            #pygame.draw.rect(screen, getSquareColor(color), squareOuter)
-            #pygame.draw.rect(screen, pygame.Color( "black"), squareInner)
             
             pawn = pygame.transform.scale(IMAGES['wR'], (18,18))
-            #fill(pawn, pygame.Color(10, 80, 10))
-            fill(pawn, pygame.Color(0, 255, 0))
-            screen.blit(pawn, squareOuter)
+            if (r,c) in state.dictionary:
+                if state.dictionary[(r,c)]== (1, 255):
+                    fill(pawn, pygame.Color(255, 255, 255))
+                elif state.dictionary[(r,c)][0]== 1:
+                    fill(pawn, pygame.Color(0, state.dictionary[(r,c)][1], 0))
+                screen.blit(pawn, squareOuter)
 
 def fill(surface, color):
     """Fill all pixels of the surface with color, preserve transparency."""
@@ -99,13 +94,6 @@ def fill(surface, color):
         for y in range(h):
             a = surface.get_at((x, y))[3]
             surface.set_at((x, y), pygame.Color(r, g, b, a))
-
-'''
-Returns color based on value
-'''
-def getSquareColor(value):
-    return pygame.Color(200, 200, 200)
-        
-                
+            
 
 main()
