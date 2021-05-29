@@ -1,3 +1,4 @@
+from random import randint
 import pygame
 from pygame.locals import *
 import Data
@@ -39,8 +40,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 mainLoop = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
+            #elif event.type == pygame.MOUSEBUTTONDOWN:
+                #state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
             elif event.type == pygame.VIDEORESIZE:
                 screen.fill(pygame.Color('black'))
                 HEIGHT = screen.get_height()
@@ -49,7 +50,12 @@ def main():
         now = int(time.time()*10 % 60)
         if now != notNow:
             state.update((HEIGHT / SQ_SIZE / 2))    
+            
+            if (randint(0, 1) == 0):
+                state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
+        
         notNow = int(time.time()*10 % 60)
+
 
         drawState(screen, state)
         clock.tick(MAX_FPS)

@@ -3,7 +3,7 @@ import random
 class State():
 
     def __init__(self):
-        self.dictionary = {(0,0): (1, 255)}
+        self.dictionary = {(0,0): (1, 255)} #{(row, col): (value?, brightness)}
 
 
     def addDrop(self, width, top):
@@ -14,7 +14,7 @@ class State():
 
         self.dictionary[screenTop, column] = (1, 255)
 
-        print(self.dictionary)
+        #print(self.dictionary)
 
 
     def update(self, screenBottom):
@@ -23,9 +23,7 @@ class State():
         for cellPos in self.dictionary.keys():
             cellValue = (self.dictionary[cellPos][0], self.dictionary[cellPos][1])
             
-            #if cellValue[1] <= 0:
-               #del temp[cellPos]
-                #print("pop")
+            
 
             if cellValue[1] >= 20:
                 temp[cellPos] =  (cellValue[0], cellValue[1] - 20) #Lower oppacity
@@ -35,6 +33,9 @@ class State():
             if cellPos[0] <= screenBottom:
                 temp[(cellPos[0] + 1, cellPos[1])] = (1, 255)  # Add white to next bottom
             
+            if cellValue[1] < 20:
+                del temp[cellPos]
+                #temp.pop(cellPos)
         
         self.dictionary = temp.copy()
 
