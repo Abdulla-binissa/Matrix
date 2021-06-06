@@ -40,7 +40,9 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 mainLoop = False
-            #elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                print(state.dictionary, "\n")
+                #print((HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
                 #state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
             elif event.type == pygame.VIDEORESIZE:
                 screen.fill(pygame.Color('black'))
@@ -51,8 +53,8 @@ def main():
         if now != notNow:
             state.update((HEIGHT / SQ_SIZE / 2))    
             
-            if (randint(0, 1) == 0):
-                state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
+            state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
+            state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
         
         notNow = int(time.time()*10 % 60)
 
@@ -83,13 +85,35 @@ def drawState(screen, state): #, state):
                 (bottom+r)*SQ_SIZE + padding, 
                 SQ_SIZE - 2*padding, 
                 SQ_SIZE - 2*padding)
-            
-            pawn = pygame.transform.scale(IMAGES['wR'], (18,18))
+            squareOuter2 = pygame.Rect(
+                (right+c)*SQ_SIZE, 
+                (bottom+r)*SQ_SIZE, 
+                SQ_SIZE+1, 
+                SQ_SIZE)
+
+            randy = randint(0, 5)
+
+            if (randy == 0):
+                img = IMAGES['wR']
+            elif (randy == 1):
+                img = IMAGES['wN']
+            elif (randy == 2):
+                img = IMAGES['wB']
+            elif (randy == 3):
+                img = IMAGES['wQ']
+            elif (randy == 4):
+                img = IMAGES['wQ']
+            elif (randy == 5):
+                img = IMAGES['wP']
+
+            pawn = pygame.transform.scale(img, (18,18))
+
             if (r,c) in state.dictionary:
+                screen.fill((0,0,0), squareOuter2)
                 if state.dictionary[(r,c)]== (1, 255):
                     fill(pawn, pygame.Color(255, 255, 255))
                 elif state.dictionary[(r,c)][0]== 1:
-                    fill(pawn, pygame.Color(0, state.dictionary[(r,c)][1], 0))
+                    fill(pawn, pygame.Color(0, state.dictionary[(r,c)][1] // 2, 0))
                 screen.blit(pawn, squareOuter)
 
 def fill(surface, color):

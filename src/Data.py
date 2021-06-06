@@ -13,30 +13,23 @@ class State():
         column = random.randint(screenMin, screenMax)
 
         self.dictionary[screenTop, column] = (1, 255)
-
-        #print(self.dictionary)
-
-
+    
     def update(self, screenBottom):
-        temp = self.dictionary.copy()
-        
+        temp = dict(self.dictionary) #.copy()
+        tailSize = 5
+
         for cellPos in self.dictionary.keys():
             cellValue = (self.dictionary[cellPos][0], self.dictionary[cellPos][1])
-            
-            
-
-            if cellValue[1] >= 20:
-                temp[cellPos] =  (cellValue[0], cellValue[1] - 20) #Lower oppacity
-            else: 
-                temp[cellPos] =  (cellValue[0], 0) 
-            
+            #Lower oppacity
+            temp[cellPos] = (cellValue[0], cellValue[1] - tailSize) if (cellValue[1] >= tailSize) else (cellValue[0], 0) 
+            # Add white to next bottom
             if cellPos[0] <= screenBottom:
-                temp[(cellPos[0] + 1, cellPos[1])] = (1, 255)  # Add white to next bottom
-            
-            if cellValue[1] < 20:
-                del temp[cellPos]
-                #temp.pop(cellPos)
+                temp[(cellPos[0] + 1, cellPos[1])] = (1, 255)  
+            # Deleting cells
+            if cellValue[1] < tailSize:
+                #del temp[cellPos]
+                temp.pop(cellPos)
         
-        self.dictionary = temp.copy()
+        self.dictionary = temp
 
         
