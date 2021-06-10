@@ -13,8 +13,8 @@ Initialize global directory of images
 '''
 def loadImages():
     pieces = ['wP', 'wR', 'wN', 'wB', 'wQ', 'wK']
-    for piece in pieces:
-        IMAGES[piece] = pygame.image.load("../images/" + piece +".png")
+    for i in range(0, 5):
+        IMAGES[i] = pygame.image.load("../images/" + pieces[i] +".png")
 
 '''
 Main -- Handle user input and update graphics
@@ -41,7 +41,8 @@ def main():
             if event.type == pygame.QUIT:
                 mainLoop = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                print(state.dictionary, "\n")
+                print(len(state.dictionary), "\n")
+                state.dictionary.clear()
                 #print((HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
                 #state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
             elif event.type == pygame.VIDEORESIZE:
@@ -57,7 +58,6 @@ def main():
             state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
         
         notNow = int(time.time()*10 % 60)
-
 
         drawState(screen, state)
         clock.tick(MAX_FPS)
@@ -79,41 +79,20 @@ def drawState(screen, state): #, state):
     for r in range( int(top) -1, int(bottom) +1):
         for c in range( int(left) -1, int(right) +1):
 
-            padding = 0.5
             squareOuter = pygame.Rect(
-                (right+c)*SQ_SIZE + padding, 
-                (bottom+r)*SQ_SIZE + padding, 
-                SQ_SIZE - 2*padding, 
-                SQ_SIZE - 2*padding)
-            squareOuter2 = pygame.Rect(
                 (right+c)*SQ_SIZE, 
                 (bottom+r)*SQ_SIZE, 
                 SQ_SIZE+1, 
                 SQ_SIZE)
 
-            randy = randint(0, 5)
-
-            if (randy == 0):
-                img = IMAGES['wR']
-            elif (randy == 1):
-                img = IMAGES['wN']
-            elif (randy == 2):
-                img = IMAGES['wB']
-            elif (randy == 3):
-                img = IMAGES['wQ']
-            elif (randy == 4):
-                img = IMAGES['wQ']
-            elif (randy == 5):
-                img = IMAGES['wP']
-
-            pawn = pygame.transform.scale(img, (18,18))
-
             if (r,c) in state.dictionary:
-                screen.fill((0,0,0), squareOuter2)
-                if state.dictionary[(r,c)]== (1, 255):
-                    fill(pawn, pygame.Color(255, 255, 255))
-                elif state.dictionary[(r,c)][0]== 1:
-                    fill(pawn, pygame.Color(0, state.dictionary[(r,c)][1] // 2, 0))
+                screen.fill((0,0,0), squareOuter)
+                pieceImg = IMAGES[state.dictionary[(r,c)][0]]
+                pieceColor = (255, 255, 255) if state.dictionary[(r,c)][1] == 255 else (0, state.dictionary[(r,c)][1] // 2, 0)
+
+                pawn = pygame.transform.scale(pieceImg, (16,16))
+                fill(pawn, pygame.Color(pieceColor))
+                
                 screen.blit(pawn, squareOuter)
 
 def fill(surface, color):
