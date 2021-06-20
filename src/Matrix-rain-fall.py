@@ -34,6 +34,7 @@ def main():
     
     notNow = int(time.time())
 
+    meow = 0
     mainLoop = True
     while mainLoop:
 
@@ -46,7 +47,7 @@ def main():
                 #print((HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
                 #state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
             elif event.type == pygame.VIDEORESIZE:
-                screen.fill(pygame.Color('black'))
+                #screen.fill(pygame.Color('black'))
                 HEIGHT = screen.get_height()
                 WIDTH = screen.get_width()
         
@@ -54,14 +55,17 @@ def main():
         if now != notNow:
             state.update((HEIGHT / SQ_SIZE / 2))    
             
-            state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
-            state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
+            if(meow % 3 == 0):
+                state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
+            meow += 1
+            #state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
         
-        notNow = int(time.time()*10 % 60)
+        notNow = now
 
         drawState(screen, state)
         clock.tick(MAX_FPS)
         pygame.display.flip()
+
 
  
 '''
@@ -79,20 +83,21 @@ def drawState(screen, state): #, state):
     for r in range( int(top) -1, int(bottom) +1):
         for c in range( int(left) -1, int(right) +1):
 
-            squareOuter = pygame.Rect(
-                (right+c)*SQ_SIZE, 
-                (bottom+r)*SQ_SIZE, 
-                SQ_SIZE+1, 
-                SQ_SIZE)
-
             if (r,c) in state.dictionary:
-                screen.fill((0,0,0), squareOuter)
-                pieceImg = IMAGES[state.dictionary[(r,c)][0]]
-                pieceColor = (255, 255, 255) if state.dictionary[(r,c)][1] == 255 else (0, state.dictionary[(r,c)][1] // 2, 0)
 
-                pawn = pygame.transform.scale(pieceImg, (16,16))
+                squareOuter = pygame.Rect(
+                    (right+c)*SQ_SIZE, 
+                    (bottom+r)*SQ_SIZE, 
+                    SQ_SIZE+1, 
+                    SQ_SIZE)
+                screen.fill((0,0,0), squareOuter)
+
+                piece = state.dictionary[(r,c)]
+                pieceImg = IMAGES[piece[0]]
+                pieceColor = (255, 255, 255) if piece[1] == 255 else (0, piece[1] // 2, 0)
+
+                pawn = pygame.transform.scale(pieceImg, (SQ_SIZE,SQ_SIZE))
                 fill(pawn, pygame.Color(pieceColor))
-                
                 screen.blit(pawn, squareOuter)
 
 def fill(surface, color):
