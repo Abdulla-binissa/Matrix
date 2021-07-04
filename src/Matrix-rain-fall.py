@@ -8,17 +8,13 @@ SQ_SIZE =  16
 MAX_FPS = 15
 IMAGES = {}
 
-'''
-Initialize global directory of images
-'''
+# Initialize global directory of images
 def loadImages():
     pieces = ['wP', 'wR', 'wN', 'wB', 'wQ', 'wK']
     for i in range(0, 5):
         IMAGES[i] = pygame.image.load("../images/" + pieces[i] +".png")
 
-'''
-Main -- Handle user input and update graphics
-'''
+# Main -- Handle user input and update graphics
 def main():
     WIDTH, HEIGHT = 1200, 800
     pygame.init()
@@ -34,43 +30,43 @@ def main():
     
     notNow = int(time.time())
 
-    meow = 0
+    dropQuantity = 0
     mainLoop = True
     while mainLoop:
 
+        # Event Handlers
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 mainLoop = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 print(len(state.dictionary), "\n")
-                state.dictionary.clear()
+                #state.dictionary.clear()
                 #print((HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
                 #state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
             elif event.type == pygame.VIDEORESIZE:
-                #screen.fill(pygame.Color('black'))
                 HEIGHT = screen.get_height()
                 WIDTH = screen.get_width()
         
+        # Update-ticker
         now = int(time.time()*10 % 60)
         if now != notNow:
+            # Update Drops
             state.update((HEIGHT / SQ_SIZE / 2))    
             
-            if(meow % 3 == 0):
+            # Add Drop
+            if(dropQuantity % 2 == 0):
                 state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
-            meow += 1
-            #state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
-        
+            dropQuantity += 1
         notNow = now
 
+        # Draw State
         drawState(screen, state)
         clock.tick(MAX_FPS)
         pygame.display.flip()
 
 
  
-'''
-Responsible for all graphics within a current game state
-'''   
+# Responsible for all graphics within a current game state
 def drawState(screen, state): #, state):
     HEIGHT = screen.get_height()
     WIDTH = screen.get_width()
@@ -101,7 +97,7 @@ def drawState(screen, state): #, state):
                 screen.blit(pawn, squareOuter)
 
 def fill(surface, color):
-    """Fill all pixels of the surface with color, preserve transparency."""
+    # Fill all pixels of the surface with color, preserve transparency.
     w, h = surface.get_size()
     r, g, b, _ = color
     for x in range(w):
