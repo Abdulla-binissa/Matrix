@@ -3,6 +3,13 @@ import pygame
 from pygame.locals import *
 import Data
 import time
+import string
+import random
+
+pygame.font.init()
+fout = pygame.font.SysFont("Song Ti", 25)
+
+clock = pygame.time.Clock()
 
 SQ_SIZE =  16 
 MAX_FPS = 15
@@ -40,6 +47,7 @@ def main():
                 mainLoop = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 print(len(state.dictionary), "\n")
+                print(str(int(clock.get_fps())), "\n")
                 #state.dictionary.clear()
                 #print((HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
                 #state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
@@ -54,7 +62,7 @@ def main():
             state.update((HEIGHT / SQ_SIZE / 2))    
             
             # Add Drop
-            if(dropQuantity % 2 == 0):
+            if(dropQuantity % 1 == 0):
                 state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
             dropQuantity += 1
         notNow = now
@@ -89,12 +97,17 @@ def drawState(screen, state): #, state):
                 screen.fill((0,0,0), squareOuter)
 
                 piece = state.dictionary[(r,c)]
-                pieceImg = IMAGES[piece[0]]
+                #pieceImg = IMAGES[piece[0]]
                 pieceColor = (255, 255, 255) if piece[1] == 255 else (0, piece[1] // 2, 0)
 
-                pawn = pygame.transform.scale(pieceImg, (SQ_SIZE,SQ_SIZE))
-                fill(pawn, pygame.Color(pieceColor))
-                screen.blit(pawn, squareOuter)
+                #pawn = pygame.transform.scale(pieceImg, (SQ_SIZE,SQ_SIZE))
+                #fill(pawn, pygame.Color(pieceColor))
+                #screen.blit(pawn, squareOuter)
+
+                acs = string.punctuation + string.digits + string.ascii_letters
+                texts = [fout.render(str(i), True, pieceColor) for i in acs]
+                text = texts[piece[0]*2]
+                screen.blit(text, squareOuter)
 
 def fill(surface, color):
     # Fill all pixels of the surface with color, preserve transparency.
