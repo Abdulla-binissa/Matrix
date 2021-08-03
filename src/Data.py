@@ -15,7 +15,7 @@ class State():
         self.dictionary[screenTop, column] = (1, 255)
     
     def update(self, screenBottom):
-        tailSize = 10
+        tailSize = 7
         keys = self.dictionary.keys()
 
         for cellPos in list(reversed(keys)):
@@ -24,7 +24,7 @@ class State():
             
             #Update Cell
             opacity = cellOpacity - tailSize if cellOpacity >= tailSize else 0
-            cellIMG = cellIMG if randint(0, (opacity//20)**2) <= 1 else randint(0,4)
+            cellIMG = cellIMG if randint(0, (opacity//40)**2) <= 1 else randint(0,4)
             self.dictionary[cellPos] = (cellIMG, opacity) 
             
             # Add white to next bottom

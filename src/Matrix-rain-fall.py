@@ -26,10 +26,10 @@ def main():
     WIDTH, HEIGHT = 1200, 800
     pygame.init()
 
-    screen = pygame.display.set_mode(( WIDTH, HEIGHT ), pygame.RESIZABLE) #, pygame.NOFRAME)
+    screen = pygame.display.set_mode(( WIDTH, HEIGHT ) , pygame.RESIZABLE) #, pygame.NOFRAME)
     clock = pygame.time.Clock()
 
-    pygame.display.set_caption('Matrix Rain Fall')
+    pygame.display.set_caption('Matrix Chess Rain')
     screen.fill(pygame.Color('black'))
     state = Data.State()
 
@@ -62,7 +62,7 @@ def main():
             state.update((HEIGHT / SQ_SIZE / 2))    
             
             # Add Drop
-            if(dropQuantity % 1 == 0):
+            if(dropQuantity % 3 == 0):
                 state.addDrop(WIDTH / SQ_SIZE, (HEIGHT / SQ_SIZE / 2 ) - (HEIGHT / SQ_SIZE))
             dropQuantity += 1
         notNow = now
@@ -75,7 +75,7 @@ def main():
 
  
 # Responsible for all graphics within a current game state
-def drawState(screen, state): #, state):
+def drawState(screen, state):
     HEIGHT = screen.get_height()
     WIDTH = screen.get_width()
 
@@ -97,17 +97,17 @@ def drawState(screen, state): #, state):
                 screen.fill((0,0,0), squareOuter)
 
                 piece = state.dictionary[(r,c)]
-                #pieceImg = IMAGES[piece[0]]
+                pieceImg = IMAGES[piece[0]]
                 pieceColor = (255, 255, 255) if piece[1] == 255 else (0, piece[1] // 2, 0)
 
-                #pawn = pygame.transform.scale(pieceImg, (SQ_SIZE,SQ_SIZE))
-                #fill(pawn, pygame.Color(pieceColor))
-                #screen.blit(pawn, squareOuter)
+                pawn = pygame.transform.scale(pieceImg, (SQ_SIZE,SQ_SIZE))
+                fill(pawn, pygame.Color(pieceColor))
+                screen.blit(pawn, squareOuter)
 
-                acs = string.punctuation + string.digits + string.ascii_letters
-                texts = [fout.render(str(i), True, pieceColor) for i in acs]
-                text = texts[piece[0]*2]
-                screen.blit(text, squareOuter)
+                #acs = string.punctuation + string.digits + string.ascii_letters
+                #texts = [fout.render(str(i), True, pieceColor) for i in acs]
+                #text = texts[piece[0]*20]
+                #screen.blit(text, squareOuter)
 
 def fill(surface, color):
     # Fill all pixels of the surface with color, preserve transparency.
